@@ -1,21 +1,20 @@
 """RSS feed fetching and parsing."""
 
-from datetime import datetime, timezone
-from email.utils import parsedate_to_datetime
+from datetime import UTC, datetime
 
 import feedparser
 import httpx
 
 
-def _parse_date(entry) -> str:
+def _parse_date(entry: feedparser.FeedParserDict) -> str:
     for field in ("published", "updated"):
         raw = entry.get(f"{field}_parsed")
         if raw:
             try:
-                return datetime(*raw[:6], tzinfo=timezone.utc).isoformat()
-            except Exception:
+                return datetime(*raw[:6], tzinfo=UTC).isoformat()
+            except Exception:  # noqa: S110
                 pass
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def fetch_feed(url: str, limit: int = 10) -> list[dict]:
@@ -27,14 +26,12 @@ def fetch_feed(url: str, limit: int = 10) -> list[dict]:
     except Exception as exc:
         return [{"error": str(exc), "url": url}]
 
-    results = []
-    for entry in parsed.entries[:limit]:
-        results.append(
-            {
-                "title": entry.get("title", "(no title)"),
-                "url": entry.get("link", ""),
-                "summary": entry.get("summary", ""),
-                "published": _parse_date(entry),
-            }
-        )
-    return results
+    return [
+        {
+            "title": entry.get("title", "(no title)"),
+            "url": entry.get("link", ""),
+            "summary": entry.get("summary", ""),
+            "published": _parse_date(entry),
+        }
+        for entry in parsed.entries[:limit]
+    ]
