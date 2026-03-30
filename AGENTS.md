@@ -183,3 +183,41 @@ uv python pin 3.13
 - Verify with `uv run ruff check .` (should be clean)
 - Keep diffs minimal and focused on the change
 - Do not include unrelated reformatting in commits
+
+---
+
+## 6. Improvements
+
+Potential features and enhancements, grouped by what they require.
+Mark ideas here rather than opening issues for every passing thought.
+
+### No additional dependencies (pure Python)
+
+- **Org-mode digest format** — `digest(format="org")` writes a dated org file
+  (e.g. `~/.feedpilot/2026-03-30.org`) with each headline as an org entry,
+  URL as an org link, and source as a tag. Openable directly in nvim-orgmode or Emacs.
+- **Markdown digest format** — same idea, `format="md"`, for non-org workflows.
+- **Per-source filtering by keyword** — filter headlines by keyword at fetch time,
+  not just by tag/source.
+- **Custom sources persistence** — store user-added feed URLs in a local JSON/TOML
+  file so they survive restarts (currently only defaults are known).
+- **Read/seen tracking** — mark items as read so `digest` only surfaces new items.
+
+### Requires optional CLI tools
+
+These enhancements depend on tools that may not be present on all systems.
+Check with `Get-Command <tool>` before implementing; degrade gracefully if absent.
+
+| Tool | Enhancement |
+|------|-------------|
+| `jq` | Structured transformation of digest output — pipe-friendly filtering by field |
+| `fzf` | Interactive source/headline selection — only when user explicitly requests it |
+| `rg` | Full-text search across saved digest files in `~/.feedpilot/` |
+
+### Org-mode interop notes
+
+- Each digest entry maps cleanly to an org headline with `[[url][title]]` link syntax
+- Source name becomes an org `:tag:` on the headline
+- A daily digest file per date makes org agenda integration natural
+  (`org-agenda-files` can point at `~/.feedpilot/`)
+
