@@ -1,0 +1,13 @@
+{
+    "mcpServers": {
+        "feedpilot": {
+            "command": "uv",
+            "args": [
+                "run",
+                "feedpilot"
+            ],
+            "cwd": "d:\\feedpilot",
+            "description": "Daily tech digest MCP server for RSS/Atom feeds"
+        }
+    }
+}

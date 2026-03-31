@@ -1,0 +1,13 @@
+{
+  "servers": {
+    "feedpilot": {
+      "type": "stdio",
+      "command": "C:\\Users\\omistaja\\.local\\bin\\uv.exe",
+      "args": [
+        "run",
+        "feedpilot"
+      ],
+      "cwd": "${workspaceFolder}"
+    }
+  }
+}
