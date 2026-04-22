@@ -11,6 +11,7 @@ mcp = FastMCP(
         "Feedpilot delivers a daily tech digest from RSS/Atom feeds. "
         "Use `digest` to get headlines across all default sources. "
         "Use `headlines` to fetch from a specific source by name or URL. "
+        "Use `multi_headlines` to fetch from several named sources in one call. "
         "Use `list_sources` to see the available default feeds."
     ),
 )
@@ -37,6 +38,22 @@ async def headlines(source: str, limit: int = 10) -> list[dict]:
             break
 
     return await fetch_feed(url, limit=limit)
+
+
+@mcp.tool
+async def multi_headlines(sources: list[str], limit: int = 10) -> dict[str, list[dict]]:
+    """Fetch recent headlines from several sources in parallel.
+
+    Args:
+        sources: List of source names (e.g. ['Phoronix', 'LKML']) or raw feed URLs.
+        limit: Maximum number of items to return per source.
+    """
+    name_to_url = {s["name"].lower(): s["url"] for s in SOURCES}
+    resolved = [(name_to_url.get(s.lower(), s), s) for s in sources]
+
+    pairs = [(url, limit) for url, _ in resolved]
+    results = await fetch_many(pairs)
+    return {label: result for (_, label), result in zip(resolved, results, strict=True)}
 
 
 @mcp.tool
