@@ -129,7 +129,7 @@ Copilot will automatically invoke the feedpilot tools to fetch and summarize the
 ### Command not found errors
 
 - Ensure you're using the full path to `uv` or that it's in your PATH
-- On Windows with PowerShell, try using backticks to escape backslashes in JSON
+- On Windows, when editing a `.json` file, escape backslashes with `\\` (for example, `C:\\Users\\<YourUsername>\\.local\\bin\\uv.exe`); only use PowerShell backticks if you're embedding JSON inside a PowerShell string
 
 ---
 
