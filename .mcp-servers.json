@@ -6,7 +6,7 @@
                 "run",
                 "feedpilot"
             ],
-            "cwd": "d:\\feedpilot",
+            "cwd": "${workspaceFolder}",
             "description": "Daily tech digest MCP server for RSS/Atom feeds"
         }
     }
