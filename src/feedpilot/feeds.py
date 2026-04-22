@@ -17,10 +17,13 @@ def _parse_date(entry: feedparser.FeedParserDict) -> str:
     return datetime.now(UTC).isoformat()
 
 
+_HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; feedpilot/1.0; +https://github.com/ossirytk/feedpilot)"}
+
+
 def fetch_feed(url: str, limit: int = 10) -> list[dict]:
     """Fetch and parse an RSS/Atom feed, returning the most recent entries."""
     try:
-        response = httpx.get(url, timeout=10, follow_redirects=True)
+        response = httpx.get(url, timeout=10, follow_redirects=True, headers=_HEADERS)
         response.raise_for_status()
         parsed = feedparser.parse(response.text)
     except Exception as exc:

@@ -1,0 +1,39 @@
+[[sources]]
+name = "Phoronix"
+url = "https://www.phoronix.com/rss.php"
+tags = ["linux", "hardware", "benchmarks"]
+
+[[sources]]
+name = "Hacker News"
+url = "https://news.ycombinator.com/rss"
+tags = ["tech", "programming"]
+
+[[sources]]
+name = "LWN.net"
+url = "https://lwn.net/headlines/rss"
+tags = ["linux", "kernel"]
+
+[[sources]]
+name = "GitHub Blog"
+url = "https://github.blog/feed/"
+tags = ["github", "devtools"]
+
+[[sources]]
+name = "NCSC-FI"
+url = "https://www.kyberturvallisuuskeskus.fi/sites/default/files/rss/news.xml"
+tags = ["security", "finland", "infosec"]
+
+[[sources]]
+name = "Cyber Security News"
+url = "https://cybersecuritynews.com/feed/"
+tags = ["security", "infosec", "vulnerabilities"]
+
+[[sources]]
+name = "SecurityWeek"
+url = "https://www.securityweek.com/feed/"
+tags = ["security", "infosec", "enterprise"]
+
+[[sources]]
+name = "LKML"
+url = "https://lkml.org/rdfresh.php"
+tags = ["linux", "kernel", "mailing-list"]
