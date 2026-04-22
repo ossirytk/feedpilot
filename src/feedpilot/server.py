@@ -2,7 +2,7 @@
 
 from fastmcp import FastMCP
 
-from feedpilot.feeds import fetch_feed
+from feedpilot.feeds import fetch_feed, fetch_many
 from feedpilot.sources import SOURCES
 
 mcp = FastMCP(
@@ -23,7 +23,7 @@ def list_sources() -> list[dict]:
 
 
 @mcp.tool
-def headlines(source: str, limit: int = 10) -> list[dict]:
+async def headlines(source: str, limit: int = 10) -> list[dict]:
     """Fetch recent headlines from a specific source.
 
     Args:
@@ -36,11 +36,11 @@ def headlines(source: str, limit: int = 10) -> list[dict]:
             url = s["url"]
             break
 
-    return fetch_feed(url, limit=limit)
+    return await fetch_feed(url, limit=limit)
 
 
 @mcp.tool
-def digest(limit_per_source: int = 5, tags: list[str] | None = None) -> dict[str, list[dict]]:
+async def digest(limit_per_source: int = 5, tags: list[str] | None = None) -> dict[str, list[dict]]:
     """Fetch headlines from all default sources and return a combined digest.
 
     Args:
@@ -53,10 +53,9 @@ def digest(limit_per_source: int = 5, tags: list[str] | None = None) -> dict[str
         tag_set = {t.lower() for t in tags}
         sources = [s for s in sources if tag_set.intersection(t.lower() for t in s["tags"])]
 
-    result = {}
-    for source in sources:
-        result[source["name"]] = fetch_feed(source["url"], limit=limit_per_source)
-    return result
+    pairs = [(s["url"], limit_per_source) for s in sources]
+    results = await fetch_many(pairs)
+    return {source["name"]: result for source, result in zip(sources, results, strict=True)}
 
 
 def run() -> None:
