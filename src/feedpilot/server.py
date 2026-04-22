@@ -57,20 +57,32 @@ async def multi_headlines(sources: list[str], limit: int = 10) -> dict[str, list
 
 
 @mcp.tool
-async def digest(limit_per_source: int = 5, tags: list[str] | None = None) -> dict[str, list[dict]]:
+async def digest(
+    limit_per_source: int = 5,
+    tags: list[str] | None = None,
+    exclude: list[str] | None = None,
+    overrides: dict[str, int] | None = None,
+) -> dict[str, list[dict]]:
     """Fetch headlines from all default sources and return a combined digest.
 
     Args:
-        limit_per_source: Number of items to fetch per source.
+        limit_per_source: Default number of items to fetch per source.
         tags: Optional list of tags to filter sources (e.g. ['linux', 'hardware']).
               If empty, all sources are included.
+        exclude: Optional list of source names to skip (e.g. ['LKML']).
+        overrides: Optional per-source item limits (e.g. {'LKML': 3, 'Phoronix': 10}).
+                   Unspecified sources use limit_per_source.
     """
     sources = SOURCES
     if tags:
         tag_set = {t.lower() for t in tags}
         sources = [s for s in sources if tag_set.intersection(t.lower() for t in s["tags"])]
+    if exclude:
+        exclude_set = {e.lower() for e in exclude}
+        sources = [s for s in sources if s["name"].lower() not in exclude_set]
 
-    pairs = [(s["url"], limit_per_source) for s in sources]
+    override_map = {k.lower(): v for k, v in overrides.items()} if overrides else {}
+    pairs = [(s["url"], override_map.get(s["name"].lower(), limit_per_source)) for s in sources]
     results = await fetch_many(pairs)
     return {source["name"]: result for source, result in zip(sources, results, strict=True)}
 
