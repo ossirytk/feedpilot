@@ -57,7 +57,7 @@ uv run feedpilot
 To use feedpilot with GitHub Copilot in VS Code, see [MCP-SETUP.md](MCP-SETUP.md) for configuration instructions.
 
 Quick summary:
-1. Copy the MCP server config to your Claude Desktop or VS Code settings
+1. Copy the MCP server config into your VS Code / GitHub Copilot MCP settings as described in [MCP-SETUP.md](MCP-SETUP.md)
 2. Update the `cwd` path to match your feedpilot installation
 3. Restart VS Code and ask Copilot about the latest news
 
