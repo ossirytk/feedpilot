@@ -66,7 +66,26 @@ Acceptance criteria:
 
 ## P1 - Reliability, Performance, and Data Quality
 
-### 4) Local caching with TTL
+### 4) Keyword/topic filtering across fetched headlines
+Status: not started
+
+Problem:
+- Tag filtering selects which *sources* to include but cannot filter individual *headlines* by topic.
+- Users asking "anything about ransomware?" must receive all items and scan manually.
+
+Proposed work:
+- Add a `search(query: str, tags: list[str] | None, limit_per_source: int)` tool that:
+  - fetches all sources (optionally pre-filtered by tag)
+  - filters returned items by matching `query` against title and summary (case-insensitive substring or simple tokenised match)
+  - returns only matching items, grouped by source
+- Consider exposing the same filter as a `query` parameter on `digest` for inline use.
+
+Acceptance criteria:
+- Single MCP call returns cross-source results filtered by keyword.
+- Empty-match is handled gracefully (returns empty dict, not an error).
+- No additional dependencies required (pure Python string matching).
+
+### 5) Local caching with TTL
 Status: not started
 
 Problem:
@@ -81,7 +100,7 @@ Acceptance criteria:
 - Back-to-back calls are fast and deterministic within TTL.
 - Users can bypass cache when needed.
 
-### 5) Read/seen tracking
+### 6) Read/seen tracking
 Status: not started
 
 Problem:
@@ -96,7 +115,7 @@ Acceptance criteria:
 - Daily usage can focus on new items only.
 - State survives restarts.
 
-### 6) Better source control and persistence
+### 7) Better source control and persistence
 Status: not started
 
 Problem:
@@ -113,7 +132,7 @@ Acceptance criteria:
 
 ## P2 - Usability and Ecosystem
 
-### 7) Output formats (Markdown and Org-mode)
+### 8) Output formats (Markdown and Org-mode)
 Status: not started
 
 Problem:
@@ -128,7 +147,7 @@ Proposed work:
 Acceptance criteria:
 - Digest can be exported directly for personal workflows.
 
-### 8) Optional advanced CLI integrations
+### 9) Optional advanced CLI integrations
 Status: not started
 
 Problem:
@@ -146,7 +165,7 @@ Acceptance criteria:
 
 ## Engineering Quality Work
 
-### 9) Test coverage expansion
+### 10) Test coverage expansion
 Status: not started
 
 Proposed work:
@@ -161,7 +180,7 @@ Acceptance criteria:
 - New behavior is covered by unit tests.
 - Regression risk is reduced for feed parsing and MCP responses.
 
-### 10) CI quality gates
+### 11) CI quality gates
 Status: not started
 
 Proposed work:
@@ -180,9 +199,10 @@ Acceptance criteria:
 
 1. MCP diagnostics and source-level error reporting
 2. Filter normalization and discoverability
-3. Caching and seen-item tracking
-4. Source persistence improvements
-5. Export formats and optional integrations
+3. Keyword/topic search across fetched headlines
+4. Caching and seen-item tracking
+5. Source persistence improvements
+6. Export formats and optional integrations
 
 ## Notes
 
