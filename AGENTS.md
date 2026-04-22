@@ -25,49 +25,6 @@ All terminal commands should be reproducible from the supported shell/editor com
 
 ---
 
-## 0.1 Available CLI Tools
-
-The following tools are installed locally and available for use in terminal workflows and agent tasks:
-
-| Tool | Purpose |
-|------|---------|
-| `diffutils` | File comparison (`diff`, `cmp`, `diff3`, `sdiff`) |
-| `fd` | Fast, user-friendly alternative to `find` for file search |
-| `fzf` | General-purpose fuzzy finder for interactive filtering |
-| `ripgrep` (`rg`) | Fast regex search across files; prefer over `grep`/`Select-String` |
-| `zip` | Archive creation and extraction |
-| `tokei` | Count lines of code by language |
-| `ast-grep` (`sg`) | Structural code search and rewriting using AST patterns |
-| `jq` | JSON query and transformation CLI |
-| `yq` | YAML/JSON/TOML query and transformation CLI |
-| `hyperfine` | Command-line benchmarking with statistical output |
-| `pre-commit` | Run and manage repository pre-commit hooks |
-| `http` / `https` (HTTPie) | Human-friendly HTTP API client |
-| `just` | Project task runner via `justfile` recipes |
-| `difft` (difftastic) | Syntax-aware structural diffing |
-
-Prefer these tools over PowerShell built-ins where applicable (e.g., use `rg` instead of `Select-String`, use `fd` instead of `Get-ChildItem` for file discovery).
-
-### Preferred command order
-
-- Content search: `rg` first, then `ast-grep` for structural/language-aware matching
-- File discovery: `fd` first, then `rg --files` as a fallback
-- JSON config inspection: `jq`
-- YAML/TOML inspection: `yq`
-- HTTP/API smoke checks: `http` / `https` (HTTPie)
-- Task orchestration: `just` recipes when a `justfile` exists
-- Diff/review: `difft` for syntax-aware diffs, `diff` for plain text diffs
-- Performance comparisons: `hyperfine` for repeatable timing
-
-### Avoid in autonomous runs
-
-- Avoid interactive-only flows (for example `fzf` prompts) unless the user explicitly asks for interactive selection
-- Avoid destructive git/file operations unless the user explicitly approves them
-- Avoid long-running watch commands by default; use one-shot checks first, then switch to watch mode only when requested
-- Avoid invoking `pre-commit run --all-files` on very large repos when a targeted path or hook is enough for the task
-
----
-
 ## 1. Authoritative Tools & Source of Truth
 
 ### Python
@@ -183,3 +140,41 @@ uv python pin 3.13
 - Verify with `uv run ruff check .` (should be clean)
 - Keep diffs minimal and focused on the change
 - Do not include unrelated reformatting in commits
+
+---
+
+## 6. Improvements
+
+Potential features and enhancements, grouped by what they require.
+Mark ideas here rather than opening issues for every passing thought.
+
+### No additional dependencies (pure Python)
+
+- **Org-mode digest format** — `digest(format="org")` writes a dated org file
+  (e.g. `~/.feedpilot/2026-03-30.org`) with each headline as an org entry,
+  URL as an org link, and source as a tag. Openable directly in nvim-orgmode or Emacs.
+- **Markdown digest format** — same idea, `format="md"`, for non-org workflows.
+- **Per-source filtering by keyword** — filter headlines by keyword at fetch time,
+  not just by tag/source.
+- **Custom sources persistence** — store user-added feed URLs in a local JSON/TOML
+  file so they survive restarts (currently only defaults are known).
+- **Read/seen tracking** — mark items as read so `digest` only surfaces new items.
+
+### Requires optional CLI tools
+
+These enhancements depend on tools that may not be present on all systems.
+Check with `Get-Command <tool>` before implementing; degrade gracefully if absent.
+
+| Tool | Enhancement |
+|------|-------------|
+| `jq` | Structured transformation of digest output — pipe-friendly filtering by field |
+| `fzf` | Interactive source/headline selection — only when user explicitly requests it |
+| `rg` | Full-text search across saved digest files in `~/.feedpilot/` |
+
+### Org-mode interop notes
+
+- Each digest entry maps cleanly to an org headline with `[[url][title]]` link syntax
+- Source name becomes an org `:tag:` on the headline
+- A daily digest file per date makes org agenda integration natural
+  (`org-agenda-files` can point at `~/.feedpilot/`)
+

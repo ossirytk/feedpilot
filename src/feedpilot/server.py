@@ -2,7 +2,7 @@
 
 from fastmcp import FastMCP
 
-from feedpilot.feeds import fetch_feed
+from feedpilot.feeds import fetch_feed, fetch_many
 from feedpilot.sources import SOURCES
 
 mcp = FastMCP(
@@ -11,6 +11,7 @@ mcp = FastMCP(
         "Feedpilot delivers a daily tech digest from RSS/Atom feeds. "
         "Use `digest` to get headlines across all default sources. "
         "Use `headlines` to fetch from a specific source by name or URL. "
+        "Use `multi_headlines` to fetch from several named sources in one call. "
         "Use `list_sources` to see the available default feeds."
     ),
 )
@@ -23,7 +24,7 @@ def list_sources() -> list[dict]:
 
 
 @mcp.tool
-def headlines(source: str, limit: int = 10) -> list[dict]:
+async def headlines(source: str, limit: int = 10) -> list[dict]:
     """Fetch recent headlines from a specific source.
 
     Args:
@@ -36,27 +37,54 @@ def headlines(source: str, limit: int = 10) -> list[dict]:
             url = s["url"]
             break
 
-    return fetch_feed(url, limit=limit)
+    return await fetch_feed(url, limit=limit)
 
 
 @mcp.tool
-def digest(limit_per_source: int = 5, tags: list[str] | None = None) -> dict[str, list[dict]]:
+async def multi_headlines(sources: list[str], limit: int = 10) -> dict[str, list[dict]]:
+    """Fetch recent headlines from several sources in parallel.
+
+    Args:
+        sources: List of source names (e.g. ['Phoronix', 'LKML']) or raw feed URLs.
+        limit: Maximum number of items to return per source.
+    """
+    name_to_url = {s["name"].lower(): s["url"] for s in SOURCES}
+    resolved = [(name_to_url.get(s.lower(), s), s) for s in sources]
+
+    pairs = [(url, limit) for url, _ in resolved]
+    results = await fetch_many(pairs)
+    return {label: result for (_, label), result in zip(resolved, results, strict=True)}
+
+
+@mcp.tool
+async def digest(
+    limit_per_source: int = 5,
+    tags: list[str] | None = None,
+    exclude: list[str] | None = None,
+    overrides: dict[str, int] | None = None,
+) -> dict[str, list[dict]]:
     """Fetch headlines from all default sources and return a combined digest.
 
     Args:
-        limit_per_source: Number of items to fetch per source.
+        limit_per_source: Default number of items to fetch per source.
         tags: Optional list of tags to filter sources (e.g. ['linux', 'hardware']).
               If empty, all sources are included.
+        exclude: Optional list of source names to skip (e.g. ['LKML']).
+        overrides: Optional per-source item limits (e.g. {'LKML': 3, 'Phoronix': 10}).
+                   Unspecified sources use limit_per_source.
     """
     sources = SOURCES
     if tags:
         tag_set = {t.lower() for t in tags}
         sources = [s for s in sources if tag_set.intersection(t.lower() for t in s["tags"])]
+    if exclude:
+        exclude_set = {e.lower() for e in exclude}
+        sources = [s for s in sources if s["name"].lower() not in exclude_set]
 
-    result = {}
-    for source in sources:
-        result[source["name"]] = fetch_feed(source["url"], limit=limit_per_source)
-    return result
+    override_map = {k.lower(): v for k, v in overrides.items()} if overrides else {}
+    pairs = [(s["url"], override_map.get(s["name"].lower(), limit_per_source)) for s in sources]
+    results = await fetch_many(pairs)
+    return {source["name"]: result for source, result in zip(sources, results, strict=True)}
 
 
 def run() -> None:
