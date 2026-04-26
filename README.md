@@ -1,6 +1,6 @@
 # feedpilot
 
-A daily tech digest MCP server for use with GitHub Copilot CLI and VS Code Copilot.
+A daily tech digest MCP server for use with GitHub Copilot CLI and GitHub Copilot in VS Code.
 
 Aggregates RSS/Atom feeds from sources you care about — Linux hardware news, kernel updates, Hacker News, GitHub announcements — and lets you discuss, summarize, and drill into the day's signal with Copilot. No browser required.
 
@@ -99,7 +99,7 @@ Restart the Copilot CLI, then run `/mcp` to confirm `feedpilot` appears and its 
 
 For detailed VS Code setup including workspace-scoped config and troubleshooting, see [MCP-SETUP.md](MCP-SETUP.md).
 
-**Quick config** — create or edit `%APPDATA%\Code\User\mcp.json` (Windows) or `~/.config/Code/User/mcp.json` (macOS/Linux):
+**Quick config** — create or edit `%APPDATA%\Code\User\mcp.json` (Windows), `~/Library/Application Support/Code/User/mcp.json` (macOS), or `~/.config/Code/User/mcp.json` (Linux):
 
 *With `uv tool install` (Option A):*
 ```json

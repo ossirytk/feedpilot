@@ -108,7 +108,8 @@ This config applies across all your VS Code workspaces.
 
 Create (or edit) the user MCP config file:
 - **Windows:** `%APPDATA%\Code\User\mcp.json`
-- **macOS/Linux:** `~/.config/Code/User/mcp.json`
+- **macOS:** `~/Library/Application Support/Code/User/mcp.json`
+- **Linux:** `~/.config/Code/User/mcp.json`
 
 **Option A — `uv tool install`:**
 
@@ -190,7 +191,7 @@ feedpilot
 ```
 
 **Option B:**
-```powershell
+```bash
 cd /path/to/feedpilot
 uv run feedpilot
 ```
