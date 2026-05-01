@@ -55,6 +55,7 @@ Add feedpilot to `~/.copilot/mcp-config.json` (create it if it doesn't exist).
 {
   "mcpServers": {
     "feedpilot": {
+      "type": "stdio",
       "command": "feedpilot"
     }
   }
