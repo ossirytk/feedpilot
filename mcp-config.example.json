@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "feedpilot": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/feedpilot", "feedpilot"],
+      "tools": ["*"]
+    }
+  }
+}
