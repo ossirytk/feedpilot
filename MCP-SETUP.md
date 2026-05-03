@@ -56,6 +56,7 @@ Create `~/.copilot/mcp-config.json` (or add `feedpilot` to it if the file alread
 {
   "mcpServers": {
     "feedpilot": {
+      "type": "stdio",
       "command": "feedpilot"
     }
   }
@@ -72,6 +73,7 @@ Create `~/.copilot/mcp-config.json` (or add `feedpilot` to it if the file alread
 {
   "mcpServers": {
     "feedpilot": {
+      "type": "stdio",
       "command": "C:\\Users\\<YourUsername>\\.local\\bin\\uv.exe",
       "args": ["run", "feedpilot"],
       "cwd": "D:\\feedpilot"
@@ -88,6 +90,7 @@ Create `~/.copilot/mcp-config.json` (or add `feedpilot` to it if the file alread
 {
   "mcpServers": {
     "feedpilot": {
+      "type": "stdio",
       "command": "/home/<youruser>/.local/bin/uv",
       "args": ["run", "feedpilot"],
       "cwd": "/path/to/feedpilot"

@@ -3,8 +3,8 @@
     "feedpilot": {
       "type": "stdio",
       "command": "uv",
-      "args": ["run", "--directory", "/path/to/feedpilot", "feedpilot"],
-      "tools": ["*"]
+      "args": ["run", "feedpilot"],
+      "cwd": "/path/to/feedpilot"
     }
   }
 }

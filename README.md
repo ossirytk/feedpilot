@@ -71,6 +71,7 @@ Add feedpilot to `~/.copilot/mcp-config.json` (create it if it doesn't exist).
 {
   "mcpServers": {
     "feedpilot": {
+      "type": "stdio",
       "command": "C:\\Users\\<YourUsername>\\.local\\bin\\uv.exe",
       "args": ["run", "feedpilot"],
       "cwd": "D:\\feedpilot"
@@ -84,6 +85,7 @@ Add feedpilot to `~/.copilot/mcp-config.json` (create it if it doesn't exist).
 {
   "mcpServers": {
     "feedpilot": {
+      "type": "stdio",
       "command": "/home/<youruser>/.local/bin/uv",
       "args": ["run", "feedpilot"],
       "cwd": "/path/to/feedpilot"
