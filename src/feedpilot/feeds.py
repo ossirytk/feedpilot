@@ -123,7 +123,7 @@ async def _fetch_one(
     fetch_summaries: bool = False,
 ) -> FetchResult:
     cache = get_cache()
-    cache_key = (url, limit)
+    cache_key = (url, limit, fetch_summaries)
 
     if not force_refresh:
         cached, age = cache.get(cache_key)

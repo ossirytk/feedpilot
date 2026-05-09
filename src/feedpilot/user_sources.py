@@ -2,10 +2,12 @@
 
 import json
 import re
+import threading
 from pathlib import Path
 
 _CONFIG_DIR = Path.home() / ".feedpilot"
 _SOURCES_FILE = _CONFIG_DIR / "sources.json"
+_lock = threading.Lock()
 
 _URL_RE = re.compile(r"^https?://\S+$")
 
@@ -44,22 +46,25 @@ def add_custom_source(name: str, url: str, tags: list[str] | None = None) -> dic
         msg = f"Invalid URL: {url!r}. Must start with http:// or https://."
         raise ValueError(msg)
 
-    sources = _load_raw()
-    if any(s["name"].lower() == name.lower() for s in sources):
-        msg = f"A custom source named {name!r} already exists."
-        raise ValueError(msg)
+    with _lock:
+        sources = _load_raw()
+        if any(s["name"].lower() == name.lower() for s in sources):
+            msg = f"A custom source named {name!r} already exists."
+            raise ValueError(msg)
 
-    entry = {"name": name, "url": url, "tags": [t.strip() for t in (tags or []) if t.strip()]}
-    sources.append(entry)
-    _save_raw(sources)
+        clean_tags = [t.strip() for t in (tags or []) if isinstance(t, str) and t.strip()]
+        entry = {"name": name, "url": url, "tags": clean_tags}
+        sources.append(entry)
+        _save_raw(sources)
     return entry
 
 
 def remove_custom_source(name: str) -> bool:
     """Remove a custom source by name. Returns True if removed, False if not found."""
-    sources = _load_raw()
-    updated = [s for s in sources if s["name"].lower() != name.lower()]
-    if len(updated) == len(sources):
-        return False
-    _save_raw(updated)
+    with _lock:
+        sources = _load_raw()
+        updated = [s for s in sources if s["name"].lower() != name.lower()]
+        if len(updated) == len(sources):
+            return False
+        _save_raw(updated)
     return True

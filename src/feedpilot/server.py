@@ -178,7 +178,7 @@ async def digest(  # noqa: PLR0913
         exclude_set = {e.lower() for e in exclude}
         sources = [s for s in sources if s["name"].lower() not in exclude_set]
 
-    override_map = {k.lower(): v for k, v in overrides.items()} if overrides else {}
+    override_map = {str(k).lower(): v for k, v in overrides.items()} if overrides else {}
     pairs = [(s["url"], override_map.get(s["name"].lower(), limit_per_source)) for s in sources]
     results = await fetch_many(pairs, force_refresh=force_refresh, fetch_summaries=fetch_summaries)
     return _build_response(sources, results, unseen_only=unseen_only)
