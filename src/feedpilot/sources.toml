@@ -37,3 +37,23 @@ tags = ["security", "infosec", "enterprise"]
 name = "LKML"
 url = "https://lkml.org/rdfresh.php"
 tags = ["linux", "kernel", "mailing-list"]
+
+[[sources]]
+name = "The Changelog"
+url = "https://changelog.com/podcast.rss"
+tags = ["tech", "podcast"]
+
+[[sources]]
+name = "lobste.rs"
+url = "https://lobste.rs/rss"
+tags = ["programming", "tech"]
+
+[[sources]]
+name = "Ars Technica"
+url = "https://feeds.arstechnica.com/arstechnica/technology-lab"
+tags = ["tech", "news"]
+
+[[sources]]
+name = "Reddit r/programming"
+url = "https://www.reddit.com/r/programming/.rss"
+tags = ["programming", "community"]
